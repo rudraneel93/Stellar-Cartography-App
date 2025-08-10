@@ -1,7 +1,7 @@
 // Example: fetch stars, constellations, and deep sky objects from Stellarium Web API or similar
 // This is a mock. Replace with real API integration as needed.
 
-export async function fetchStarData(lat: number, lon: number, time: Date) {
+export async function fetchStarData() {
   // TODO: Replace with real API call. This is a mock response.
   // For demo, return a few stars, lines, and DSOs
   return {

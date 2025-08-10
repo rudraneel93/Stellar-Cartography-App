@@ -27,22 +27,12 @@ interface ConstellationLineFeature {
 
 
 
-function getViewportSize() {
-  return { width: window.innerWidth, height: window.innerHeight };
-}
-
 function App() {
   const [stars, setStars] = useState<Star[]>([]);
   const [constellationLines, setConstellationLines] = useState<ConstellationLineFeature[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [size, setSize] = useState(getViewportSize());
-
-  useEffect(() => {
-    const handleResize = () => setSize(getViewportSize());
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // Removed unused 'size' state and resize effect
 
   // Show all stars, not filtered by location
   useEffect(() => {
