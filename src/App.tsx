@@ -1,9 +1,6 @@
-
-
 import { useEffect, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import StarMap from './components/StarMap';
-// import { getCurrentPosition } from './utils/astro';
 import './App.css';
 
 
