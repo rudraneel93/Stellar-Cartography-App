@@ -5,7 +5,6 @@ This project is a modern React + Vite web app that displays a real-time, generat
 ## Features
 - Real-time star positions
 - Constellations and deep sky objects
-- Uses browser geolocation
 - Modern, performant UI (React + Vite + TypeScript)
 - Canvas/WebGL rendering
 
