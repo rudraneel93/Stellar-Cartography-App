@@ -1,5 +1,18 @@
+/**
+ * StarMap Component - Interactive 2D Celestial Visualization
+ * 
+ * AI Usage Disclosure (NASA Space Apps Challenge 2025):
+ * - GitHub Copilot assisted with Canvas API methods and viewport bounds logic (~30% of code)
+ * - Human-designed: Rendering pipeline, tooltip positioning algorithm, constellation focus mode,
+ *   spectral color mapping, magnitude scaling, animation system, interaction handlers
+ * 
+ * @author Rudraneel
+ * @created October 2025
+ */
+
 import React, { useRef, useEffect, useState } from 'react';
 import AISearch from './AISearch';
+import NASASkyView from './NASASkyView';
 
 interface Star {
   id?: number;
@@ -55,6 +68,8 @@ const StarMap: React.FC<StarMapProps> = ({ stars, constellationLines = [] }) => 
   const [constellationData, setConstellationData] = useState<any | null>(null);
   const [loadingData, setLoadingData] = useState(false);
   const [dataError, setDataError] = useState<string | null>(null);
+  const [showNASAView, setShowNASAView] = useState(false);
+  const [nasaViewData, setNASAViewData] = useState<{ name: string; ra: number; dec: number } | null>(null);
   
   // Function to select a constellation programmatically (called by AI search)
   const selectConstellationByName = (constellationName: string) => {
@@ -718,6 +733,45 @@ const StarMap: React.FC<StarMapProps> = ({ stars, constellationLines = [] }) => 
                       <a href={constellationData.wikiUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#aaf', textDecoration: 'underline' }}>Wikipedia</a>
                     </div>
                   )}
+                  {/* NASA SkyView Button */}
+                  <button
+                    onClick={() => {
+                      if (center) {
+                        // Convert canvas position back to RA/Dec
+                        const ra = (center.x / dimensions.width) * 360 / 15; // Convert to hours
+                        const dec = 90 - (center.y / dimensions.height) * 180;
+                        setNASAViewData({
+                          name: selectedConstellation || 'Unknown',
+                          ra,
+                          dec
+                        });
+                        setShowNASAView(true);
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '12px 20px',
+                      marginTop: '16px',
+                      background: 'linear-gradient(135deg, rgba(0, 100, 255, 0.3), rgba(100, 200, 255, 0.3))',
+                      border: '2px solid rgba(100, 200, 255, 0.5)',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontSize: '15px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 100, 255, 0.5), rgba(100, 200, 255, 0.5))';
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 100, 255, 0.3), rgba(100, 200, 255, 0.3))';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    🛰️ View NASA Telescope Image
+                  </button>
                 </div>
               ) : (
                 <div>No data available.</div>
@@ -733,6 +787,19 @@ const StarMap: React.FC<StarMapProps> = ({ stars, constellationLines = [] }) => 
         stars={stars}
         constellationLines={constellationLines}
       />
+
+      {/* NASA SkyView Modal */}
+      {showNASAView && nasaViewData && (
+        <NASASkyView
+          constellationName={nasaViewData.name}
+          centerRA={nasaViewData.ra}
+          centerDec={nasaViewData.dec}
+          onClose={() => {
+            setShowNASAView(false);
+            setNASAViewData(null);
+          }}
+        />
+      )}
     </div>
   );
 };

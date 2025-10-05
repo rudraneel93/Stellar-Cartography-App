@@ -1,3 +1,15 @@
+/**
+ * Natural Language Processing Engine for Astronomical Queries
+ * 
+ * AI Usage Disclosure (NASA Space Apps Challenge 2025):
+ * - GitHub Copilot assisted with regex pattern suggestions (~30% of code)
+ * - Human-designed: NLP architecture, entity types, intent classification, query logic
+ * - No external AI APIs used (fully local processing)
+ * 
+ * @author Rudraneel
+ * @created October 2025
+ */
+
 // Natural Language Processing utilities for astronomy queries
 
 interface QueryIntent {

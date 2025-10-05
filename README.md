@@ -52,6 +52,7 @@ A modern, interactive web application for exploring the night sky. Built with Re
 - **Smooth Transitions**: Animated zoom and pan effects
 
 ### 📊 Data Integration
+- **NASA SkyView Integration**: Real telescope images for any constellation or star
 - **Real-time API Fetching**: Constellation data from external APIs
 - **Local Star Catalog**: Comprehensive BSC data stored locally for instant access
 - **Constellation Geometry**: GeoJSON format for constellation lines and boundaries
@@ -146,6 +147,13 @@ public/
 
 ## 📝 Data Sources
 
+### NASA Data & Resources 🛰️
+- **NASA SkyView Virtual Observatory**: Real telescope images from multiple astronomical surveys
+  - URL: https://skyview.gsfc.nasa.gov/
+  - Provides: Digitized Sky Survey (DSS) optical images, 2MASS infrared, WISE, and more
+  - Access: Public API with no authentication required
+
+### Astronomical Catalogs
 - **Star Data**: Yale Bright Star Catalog (9,110 stars)
 - **Constellation Data**: International Astronomical Union (IAU) boundaries
 - **Constellation Information**: Wikipedia API integration
@@ -165,6 +173,7 @@ MIT License - feel free to use this project for personal or commercial purposes.
 
 ## 🙏 Acknowledgments
 
+- **NASA SkyView Virtual Observatory** for providing access to astronomical sky surveys
 - Yale Bright Star Catalog for comprehensive star data
 - IAU for constellation boundary definitions
 - React and Vite communities for excellent tooling

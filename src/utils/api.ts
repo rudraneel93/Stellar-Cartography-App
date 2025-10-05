@@ -1,6 +1,158 @@
 // Example: fetch stars, constellations, and deep sky objects from Stellarium Web API or similar
 // This is a mock. Replace with real API integration as needed.
 
+// ========================================
+// NASA SkyView Virtual Observatory Integration
+// ========================================
+// NASA Resource: https://skyview.gsfc.nasa.gov/
+// Provides access to multiple astronomical sky surveys
+// No authentication required - public API
+
+/**
+ * Generate NASA SkyView image URL for a specific sky position
+ * @param ra Right Ascension in decimal hours (0-24)
+ * @param dec Declination in decimal degrees (-90 to +90)
+ * @param size Field of view in degrees (default: 0.5)
+ * @param survey Survey to use (DSS, 2MASS, WISE, etc.)
+ * @returns URL to fetch the sky image
+ */
+export function getNASA_SkyViewImageURL(
+  ra: number,
+  dec: number,
+  size: number = 0.5,
+  survey: string = 'DSS'
+): string {
+  // Convert RA from hours to degrees for NASA SkyView
+  const raDeg = ra * 15; // 1 hour = 15 degrees
+  
+  // Build NASA SkyView URL
+  const baseUrl = 'https://skyview.gsfc.nasa.gov/cgi-bin/images';
+  const params = new URLSearchParams({
+    Survey: survey,
+    position: `${raDeg},${dec}`,
+    size: size.toString(),
+    Return: 'GIF',
+    scaling: 'Linear',
+    sampler: 'LI'
+  });
+  
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * Fetch NASA SkyView image metadata and URL for a constellation
+ * @param name Constellation name
+ * @param centerRA Central Right Ascension
+ * @param centerDec Central Declination
+ * @param surveyCode Survey code (DSS, 2MASS-J, WISE 3.4, etc.)
+ * @returns Object with image URL and metadata
+ */
+export async function fetchNASA_ConstellationImage(
+  name: string,
+  centerRA: number,
+  centerDec: number,
+  surveyCode: string = 'DSS'
+): Promise<{
+  imageUrl: string;
+  survey: string;
+  position: { ra: number; dec: number };
+  fieldOfView: number;
+  source: string;
+}> {
+  // Determine appropriate field of view based on constellation
+  // Larger constellations need wider FOV
+  const constellationSizes: Record<string, number> = {
+    'Hydra': 3.0,
+    'Virgo': 2.5,
+    'Ursa Major': 2.5,
+    'Cetus': 2.5,
+    'Hercules': 2.0,
+    'Orion': 1.5,
+    'Sagittarius': 1.5,
+    'Leo': 1.5,
+    'Ophiuchus': 2.0,
+    'Aquarius': 2.0,
+    'Andromeda': 1.5,
+    'Crux': 0.5, // Southern Cross is small
+    'Default': 1.0
+  };
+  
+  const fieldOfView = constellationSizes[name] || constellationSizes['Default'];
+  
+  // Get survey name for display
+  const surveys = getNASA_AvailableSurveys();
+  const surveyInfo = surveys.find(s => s.code === surveyCode);
+  const surveyName = surveyInfo ? `${surveyInfo.name} (${surveyInfo.wavelength})` : surveyCode;
+  
+  // Generate image URL with selected survey
+  const imageUrl = getNASA_SkyViewImageURL(centerRA, centerDec, fieldOfView, surveyCode);
+  
+  return {
+    imageUrl,
+    survey: surveyName,
+    position: { ra: centerRA, dec: centerDec },
+    fieldOfView,
+    source: 'NASA SkyView Virtual Observatory'
+  };
+}
+
+/**
+ * Get available NASA surveys for sky imaging
+ * @returns Array of available survey options
+ */
+export function getNASA_AvailableSurveys(): Array<{
+  code: string;
+  name: string;
+  description: string;
+  wavelength: string;
+}> {
+  return [
+    {
+      code: 'DSS',
+      name: 'Digitized Sky Survey',
+      description: 'Optical survey covering the entire sky',
+      wavelength: 'Optical (visible light)'
+    },
+    {
+      code: 'WISE 3.4',
+      name: 'WISE Infrared',
+      description: 'Wide-field Infrared Survey',
+      wavelength: 'Mid-Infrared (3.4 μm)'
+    }
+  ];
+}
+
+/**
+ * Fetch NASA SkyView image for a specific star
+ * @param starName Name of the star
+ * @param ra Right Ascension in hours
+ * @param dec Declination in degrees
+ * @returns Object with image URL and star context
+ */
+export async function fetchNASA_StarFieldImage(
+  starName: string,
+  ra: number,
+  dec: number
+): Promise<{
+  imageUrl: string;
+  starName: string;
+  position: string;
+  description: string;
+}> {
+  const imageUrl = getNASA_SkyViewImageURL(ra, dec, 0.25, 'DSS');
+  
+  return {
+    imageUrl,
+    starName,
+    position: `RA: ${ra.toFixed(3)}h, Dec: ${dec.toFixed(3)}°`,
+    description: `NASA telescope view of the region around ${starName}. Image from the Digitized Sky Survey via NASA SkyView Virtual Observatory.`
+  };
+}
+
+// ========================================
+// End NASA SkyView Integration
+// ========================================
+
 // Fetch detailed constellation data from Wikipedia and IAU
 export async function fetchConstellationData(name: string) {
   // Format Wikipedia title
